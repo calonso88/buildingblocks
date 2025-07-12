@@ -1,6 +1,5 @@
-`timescale 1ns/100ps
 
-module sunrise_i2c_slave (rstb, ready, start, stop, data_in, data_out, r_w, data_vld, scl_in, scl_oe, sda_in, sda_oeb);
+module i2c_slave (rstb, ready, start, stop, data_in, data_out, r_w, data_vld, scl_in, scl_oe, sda_in, sda_oeb);
       
 // generic ports
 input        rstb;                // System Reset
@@ -256,7 +255,7 @@ always @(negedge scl_in or negedge rstb) begin  // data should be ready on SDA l
     if (!r_w) begin                             // if slave is rx, acknowledge after successful receive
       ack_out <= 1'b1;
     end
-	else begin                                  // if slave is tx, acknowledge comes from Master
+	  else begin                                  // if slave is tx, acknowledge comes from Master
       ack_out <= 1'b0;
     end
   end
@@ -303,13 +302,13 @@ always @(negedge scl_in or negedge rstb) begin
     if ((sm_state == idle) && (start)) begin
       shift[0] <= sda_in;
     end
-	else if ((sm_state >= addr7) && (sm_state <= addr1)) begin
+	  else if ((sm_state >= addr7) && (sm_state <= addr1)) begin
       shift[0] <= sda_in;
     end
-	else if (r_w && (sm_state == ack)) begin                 // 2nd version    
+	  else if (r_w && (sm_state == ack)) begin                 // 2nd version    
       shift <= data_in;                                      // load the GPIO data into shift registers
     end
-	else if ((sm_state > ack) && (sm_state <= data0)) begin  // start shift the data out to SDA line // 2nd version 
+	  else if ((sm_state > ack) && (sm_state <= data0)) begin  // start shift the data out to SDA line // 2nd version 
       shift[7:1] <= shift[6:0];
       shift[0]   <= sda_in;
     end
@@ -326,7 +325,7 @@ always @ (posedge scl_in or negedge rstb) begin
   else begin 
     if (!r_w && ack_out && vld_plse) begin 
       data_int <= shift;
-	end
+	  end
   end	
 end
 
